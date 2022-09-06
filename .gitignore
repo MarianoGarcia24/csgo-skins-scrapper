@@ -1,0 +1,8 @@
+#csv files
+data.csv
+SKINS-MONKEY-data.csv
+inventory.json
+
+#node modules
+/node_modules
+
