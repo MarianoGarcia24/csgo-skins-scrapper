@@ -6,15 +6,17 @@ const cheerio = require('cheerio')
 const checker = require('./checker')
 const csvParser = require('csv-parser')
 
-
-var filters;
+var pages
+var filters
 var skinsById = []
 var skinsOnFile = []
 
-function readCsvFile(){
+const readCsvFile = (skinpage) => {
     let text = []
     let head
-    fs.createReadStream("./data.csv")
+    skinpage = "./outputs/" + skinpage + ".csv"
+    console.log(skinpage)
+    fs.createReadStream(skinpage)
     .on('error',(err)=>{
         console.log("File not found. We'll create one")
     })
@@ -32,7 +34,7 @@ function readCsvFile(){
     )
 }
 
-function writeCsvFile(skinsToPush){
+const writeCsvFile = (skinsToPush,pagename) => {
     let skins;
     if (skinsOnFile.length==0){
     //Create new file
@@ -43,7 +45,7 @@ function writeCsvFile(skinsToPush){
         skinsOnFile = skinsOnFile.join("\n")
         skins = skinsOnFile + "\n" + skinsToPush
     }
-    fs.writeFile("./data.csv",skins,"utf-8",(err)=>{
+    fs.writeFile("./outputs/" + pagename + ".csv",skins,"utf-8",(err)=>{
         if (err)
             console.log("No data file found, creating a new one")
         else{
@@ -53,21 +55,16 @@ function writeCsvFile(skinsToPush){
     })
 }
 
-async function getFilters(){
-    filters = fs.readFileSync('./filters.json');
-    filters = await JSON.parse(filters)
-    bots()
-    // getUserInv({
-    //     name: "Exo - bot#13",
-    //     JSONlink: "https://steamcommunity.com/id/gabriel309/inventory/json/730/2",
-    //     link: "https://steamcommunity.com/id/gabriel309/inventory/"
-    // })
+const getFilters = () => {
+    filters = fs.readFileSync('./inputs/filters.json');
+    filters = JSON.parse(filters)
+    pages = fs.readFileSync('./inputs/pages.json')
+    pages = JSON.parse(pages)
 }
 
-bots = async () => {
-    const urlgroup = 'https://steamcommunity.com/groups/csgoexotrade/members?searchKey=EXO%20-%20BOT'
-    //const urlgroup = 'https://steamcommunity.com/groups/skinsmonkeybots/members?searchKey=mr.%20monkey'
-    let datos = await axios.get(urlgroup)
+bots = async ({page,url}) => {
+    console.log(page,url)
+    let datos = await axios.get(url)
     .then(({data})=>{
         const $ = cheerio.load(data);
         //array to save bot's links
@@ -109,7 +106,7 @@ bots = async () => {
         }
     }
     console.log("New skins added:", skinsToCsv)
-    writeCsvFile(skinsToCsv.join("\n"))
+    writeCsvFile(skinsToCsv.join("\n"),page)
 }
 
 async function getUserInv(dato){
@@ -163,23 +160,30 @@ function iterateSkins(skins_ID,skins_DESC,link){
         else{
             let description = val.descriptions
             let stickers = description[description.length-1].value
-            stickers = stickers.slice(stickers.lastIndexOf("Sticker:"),stickers.indexOf("</"))
-            stickers = stickers.replace("Sticker: ","")
-            stickers = stickers.split(`, `)
+            stickers = stickers.slice(stickers.lastIndexOf("Sticker:"),stickers.indexOf("</")).replace("STICKER: ","").split(`, `)
             //Here, I have a skin that was previously uploaded in the file and it's still, on a inventory, so I have to push it
             let skin_obj = adapter.skinToObject(val,stickers,skin_id,link)
-            skin_obj = adapter.objectToCsv(skin_obj)
-            skinsOnFile.push(skin_obj)
+            skinsOnFile.push(adapter.objectToCsv(skin_obj))
         }
     }
     if (inv_skinstopush!=[]){
         inv_skinstopush = inv_skinstopush.join("\n")
         return inv_skinstopush
     }
+    else{
+        return ""
+    }
 }
 
-console.time("begin")
-readCsvFile()
-getFilters()
+const scrap = (groupname) => {
+    console.time("begin")
+    readCsvFile(groupname)
+    getFilters()
+    let page = pages.filter(p => p.page == groupname)
+    bots(page[0])
+}
+
+scrap("csgoexo")
+
 //getSkins()
 // bots()

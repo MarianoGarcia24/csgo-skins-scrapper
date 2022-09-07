@@ -1,7 +1,6 @@
 #csv files
-/app/data.csv
-/app/SKINS-MONKEY-data.csv
-/app/inventory.json
+/app/outputs
+/app/inputs
 
 #node modules
 /node_modules
