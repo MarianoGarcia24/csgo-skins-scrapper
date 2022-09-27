@@ -1,5 +1,4 @@
 const axios = require('axios');
-const BASE_URL = 'https://steamcommunity.com/id/je981/inventory/json/730/2'
 const fs = require('fs')
 const adapter = require('./adapter')
 const cheerio = require('cheerio')
@@ -62,7 +61,7 @@ const getFilters = () => {
     pages = JSON.parse(pages)
 }
 
-bots = async ({page,url}) => {
+const bots = async ({page,url}) => {
     console.log(page,url)
     let datos = await axios.get(url)
     .then(({data})=>{
@@ -109,7 +108,7 @@ bots = async ({page,url}) => {
     writeCsvFile(skinsToCsv.join("\n"),page)
 }
 
-async function getUserInv(dato){
+let getUserInv = async (dato) => {
     let skins_ID;
     let skins_DESC;
     let skins = await axios.get(dato.JSONlink)
@@ -131,7 +130,7 @@ async function getUserInv(dato){
     return skins
 }
 
-function iterateSkins(skins_ID,skins_DESC,link){
+let iterateSkins = (skins_ID,skins_DESC,link) => {
     let inv_skinstopush = []
     let ids_arr = []
     //save the id's to match the skin
@@ -184,6 +183,3 @@ const scrap = (groupname) => {
 }
 
 scrap("csgoexo")
-
-//getSkins()
-// bots()

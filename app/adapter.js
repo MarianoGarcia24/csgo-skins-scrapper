@@ -1,3 +1,7 @@
+//ADAPTER
+//COMPONENTE THAT TRANSFORMS PARAMETERS INTO OBJECTS, OR 
+//OBJECTS INTO CSV ALIKE STRINGS
+
 const objectToCsv = (skin) =>{
     const skinToPush = skin.NAME + ',' + skin.WEAR + ',' 
     + (skin.STICKER_0 || "") + ',' + (skin.STICKER_1 || "") + ',' 

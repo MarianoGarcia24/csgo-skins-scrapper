@@ -64,9 +64,13 @@
         },
         {
             "name":"Katowice",
-            "tags":"gold,FURIA (holo)"
+            "tags":"gold"
         }
     ]
+    },
+    {
+        "search": "Furia (Holo) | Katowice 2019",
+        "sticker": []
     },
     {
         "search":"Incineration (Holo)",
