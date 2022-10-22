@@ -1,10 +1,29 @@
 [
     {
         "page": "csgoexo",
-        "url":"https://steamcommunity.com/groups/csgoexotrade/members?searchKey=EXO%20-%20BOT"
+        "url":["https://steamcommunity.com/groups/csgoexotrade/members?searchKey=EXO%20-%20BOT"],
+        "method": "group"
     },
     {
         "page": "skinsmonkey",
-        "url": "https://steamcommunity.com/groups/skinsmonkeybots/members?searchKey=mr.%20monkey"
+        "url": ["https://steamcommunity.com/groups/skinsmonkeybots/members?searchKey=mr.%20monkey",
+                "https://steamcommunity.com/groups/skinsmonkeybots/members/?searchKey=mr.+monkey&p=2"],
+        "method": "group"
+    },
+    {
+        "page": "lootfarm",
+        "url": ["https://steamcommunity.com/profiles/76561198212419149/friends"],
+        "method": "friends"
+    },
+    {
+        "page": "swapgg",
+        "url": ["https://steamcommunity.com/id/defnite/friends/"],
+        "method": "friends"
+    },
+    {
+        "page": "tradeit",
+        "url": ["https://steamcommunity.com/groups/tradeitggbots/members/?searchKey=bot"],
+        "method": "group"
     }
+    
 ]

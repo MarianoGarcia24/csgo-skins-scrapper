@@ -4,6 +4,7 @@ const adapter = require('./adapter')
 const cheerio = require('cheerio')
 const checker = require('./checker')
 const csvParser = require('csv-parser')
+const utils = require('./utils')
 
 var pages
 var filters
@@ -61,24 +62,9 @@ const getFilters = () => {
     pages = JSON.parse(pages)
 }
 
-const bots = async ({page,url}) => {
+const bots = async ({page,url,method}) => {
     console.log(page,url)
-    let datos = await axios.get(url)
-    .then(({data})=>{
-        const $ = cheerio.load(data);
-        //array to save bot's links
-        const bots = [];
-        $('.linkFriend').each((i,el)=>{
-            const bot = {name:"",link:""};
-            bot.name = $(el).text();
-            bot.link = $(el).attr("href");
-            
-            bot.JSONlink = bot.link + "/inventory/json/730/2";
-            bot.link = bot.link + "/inventory/"
-            bots.push(bot)
-        })
-        return bots
-    })
+    let datos = utils.getBots(page)
     let i = 1
     let j = 0
     let skinsToCsv = [];
@@ -90,12 +76,12 @@ const bots = async ({page,url}) => {
             if (skins!=[])
                 skinsToCsv.push(skins)
             if (i%3==0){
-                console.log("Waiting 110 seconds")
+                console.log("Waiting 100 seconds")
                 await new Promise(r => setTimeout(r, 110000));    
             }
             else{
-                console.log("Waiting 6 seconds")
-                await new Promise(r => setTimeout(r, 6000));    
+                console.log("Waiting 5 seconds")
+                await new Promise(r => setTimeout(r, 5000));    
             }
             i++;
         }
@@ -124,8 +110,8 @@ let getUserInv = async (dato) => {
         }
     })
     .catch(err =>{
-        console.log(err)
-        return ""
+        console.log(err.code)
+        return  429
     })
     return skins
 }
@@ -138,31 +124,34 @@ let iterateSkins = (skins_ID,skins_DESC,link) => {
         ids_arr.push(val.classid + "_" + val.instanceid)
     }
     for (const [key,val] of Object.entries(skins_DESC)){
-        let skin_id = adapter.getId(val,ids_arr,skins_ID)
-        if (skinsById.includes(skin_id)!=true){
-            let description = val.descriptions
-            let stickers = description[description.length-1].value
-            // here i evaluate whether the skin has stickers or not
-            if (stickers.indexOf("Sticker:")!=-1){
-                //the tag has at least one sticker
-                //then i have to check all the stickers
-                stickers = stickers.slice(stickers.lastIndexOf("Sticker:"),stickers.indexOf("</"))
-                stickers = stickers.replace("Sticker: ","")
-                if (checker.check(stickers,filters)){
-                    //here i know that the weapon matches the stickers
-                    stickers = stickers.split(`, `)
-                    let skin_obj = adapter.skinToObject(val,stickers,adapter.getId(val,ids_arr,skins_ID),link)
-                    inv_skinstopush.push(adapter.objectToCsv(skin_obj))
-                }
-            } 
-        }
-        else{
-            let description = val.descriptions
-            let stickers = description[description.length-1].value
-            stickers = stickers.slice(stickers.lastIndexOf("Sticker:"),stickers.indexOf("</")).replace("STICKER: ","").split(`, `)
-            //Here, I have a skin that was previously uploaded in the file and it's still, on a inventory, so I have to push it
-            let skin_obj = adapter.skinToObject(val,stickers,skin_id,link)
-            skinsOnFile.push(adapter.objectToCsv(skin_obj))
+        let name = val.name
+        if (name.indexOf("Souvenir")==-1){
+            let skin_id = adapter.getId(val,ids_arr,skins_ID)
+            if (skinsById.includes(skin_id)!=true){
+                let description = val.descriptions
+                let stickers = description[description.length-1].value
+                // here i evaluate whether the skin has stickers or not
+                if (stickers.indexOf("Sticker:")!=-1){
+                    //the tag has at least one sticker
+                    //then i have to check all the stickers
+                    stickers = stickers.slice(stickers.lastIndexOf("Sticker:"),stickers.indexOf("</"))
+                    stickers = stickers.replace("Sticker: ","")
+                    if (checker.check(stickers,filters)){
+                        //here i know that the weapon matches the stickers
+                        stickers = stickers.split(`, `)
+                        let skin_obj = adapter.skinToObject(val,stickers,adapter.getId(val,ids_arr,skins_ID),link)
+                        inv_skinstopush.push(adapter.objectToCsv(skin_obj))
+                    }
+                } 
+            }
+            else{
+                let description = val.descriptions
+                let stickers = description[description.length-1].value
+                stickers = stickers.slice(stickers.lastIndexOf("Sticker:"),stickers.indexOf("</")).replace("Sticker: ","").split(`, `)
+                //Here, I have a skin that was previously uploaded in the file and it's still, on a inventory, so I have to push it
+                let skin_obj = adapter.skinToObject(val,stickers,skin_id,link)
+                skinsOnFile.push(adapter.objectToCsv(skin_obj))
+            }
         }
     }
     if (inv_skinstopush!=[]){
