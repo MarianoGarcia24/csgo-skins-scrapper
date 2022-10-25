@@ -1,6 +1,8 @@
 const cheerio = require('cheerio')
 const fs = require('fs')
 const axios = require('axios')
+require('dotenv').config()
+
 
 const getPageLinks = (groupname) => {
     let pages = fs.readFileSync('./inputs/pages.json')
@@ -11,14 +13,17 @@ const getPageLinks = (groupname) => {
 
 const getProfilesWithCSGO = async (data) => {
     let dataposta = []
-    i = 0;
-    while (i<data.length){
-        hasCSGO = await hasCSGO_inventory(data[i].link)
+    i = 1;
+    while (i<=data.length){
+        hasCSGO = await hasCSGO_inventory(data[i-1].link)
         if (hasCSGO!=429){
             if (hasCSGO==true){
-                dataposta.push(data[i])
+                dataposta.push(data[i-1])
             }
-            await new Promise(r => setTimeout(r,1000))
+            if (i%29!=0)
+                await new Promise(r => setTimeout(r,500))
+            else
+                await new Promise(r => setTimeout(r,90000))
             i++
         }
         else{
@@ -39,7 +44,8 @@ const scrapBots = async (page) => {
     }
     i = 0
     let dataposta = await getProfilesWithCSGO(data)
-    fs.writeFileSync("./inputs/" + page + ".json",JSON.stringify(dataposta,null, "\t"), 
+    console.log(JSON.stringify(dataposta))
+    fs.writeFile(`./inputs/${page}.json`,JSON.stringify(dataposta,null, "\t"),
         (err) => {
             if (err){
                  console.log("No se pudo escribir el archivo.")
@@ -63,24 +69,43 @@ const scrapBots = async (page) => {
  * 
  */
 
-const getBotsFromURL = (url,method) => {
+const getBotsFromURL = async (url,method) => {
     console.log("We will use the", method, "method.")
 
-    const bots = axios.get(url)
-                    .then(({data}) => {
+    const bots = await axios.get(url)
+                .then(async ({data}) => {
                         const $ = cheerio.load(data);
                         //array to save bot's links
                         const bots = [];
                         if (method=="group"){
-                            $('.linkFriend').each((i,el)=>{
+                        let arr = $('.linkFriend')
+                        for (el of arr){
                                 const link = $(el).attr("href");
-                                const bot = {name:"",link:""};
-                                bot.name = $(el).text();
+                            const name = $(el).text();
+                            const bot = {};
+                            bot.name = name;
                                 bot.JSONlink = link + "/inventory/json/730/2";
+                            let id = link.slice(link.lastIndexOf("/")+1,link.length)
+                            let ID64 = await getSteamID_64(id)
+                            bot.JSONlink_V2 = "https://steamcommunity.com/inventory/" + ID64 + "/730/2"
                                 bot.link = link + "/inventory/"
                                 bots.push(bot)
-                        })
                         }
+                        console.log(bots)
+                    }
+                        // $('.linkFriend').each((i,el)=>{
+                        //     const link = $(el).attr("href");
+                            // const bot = {};
+                            // bot.name = $(el).text();
+                            // bot.JSONlink = link + "/inventory/json/730/2";
+                            // let id = link.slice(link.lastIndexOf("/")+1,link.length)
+                            // let ID64 = getSteamID_64(id).then((data)=>{
+                            //     bot.JSONlink_V2 = "https://steamcommunity.com/inventory/" + data + "/730/2"
+                            //     bot.link = link + "/inventory/"
+                            //     bots.push(bot)
+                        //     })
+                        // })
+                         
                         else{
                             $('.selectable').each((i,el)=>
                             {
@@ -94,24 +119,22 @@ const getBotsFromURL = (url,method) => {
                                 }
                             })                
                         }
+                    console.log("here2")
                         return bots
                     })
+    console.log("here")
     return bots
 }
 
-// const hasCSGO_inventory = (links) => {
-//     let truelinks = []
-//     axios.all(links.map((link) => axios.get(link)))
-//                 .then(({data})=>{
-//                     console.log("here2")
-//                     const $ = cheerio.load(data)
-//                     if ($('.games_list_tabs').children('#inventory_link_730').length){
-//                         console.log(link, "has csgo")
-//                         links.push(link)
-//                     }
-//                 })
-//     return links
-// }
+/**
+ *
+ */
+const getSteamID_64 = async (vanityURL) => {
+    let url = `http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${process.env.APIKEY}&vanityurl=${vanityURL}`
+    const res = await axios.get(url)
+    const ID64 = res.data.response.steamid
+    return ID64
+}
 
 const hasCSGO_inventory = async (link) => {
     let istrue = await axios.get(link)
@@ -138,18 +161,5 @@ const getBots = (page) => {
     return pages
 }
 
-function anon(){
-     const bots = axios.get("https://steamcommunity.com/groups/skinsmonkeybots/members?searchKey=mr.%20monkey")
-                    .then(async ({data})=>{
-                        inv = await hasCSGO_inventory("https://steamcommunity.com/profiles/76561199199127358/inventory")
-                        console.log(inv)
-                        inv = await hasCSGO_inventory("https://steamcommunity.com/profiles/76561199199895773/inventory")
-                        console.log("HOLAAAAAAAAAAAAAAAAAAA")
-                        hasCSGO_inventory("https://steamcommunity.com/profiles/76561199198999427/inventory").then((data)=>console.log(data))
-                        hasCSGO_inventory("https://steamcommunity.com/profiles/76561199199381418/inventory").then((data)=>console.log(data))
-                    })
-}
-
-// anon()
-
+scrapBots("csgoexo")
 exports.getBots = getBots
