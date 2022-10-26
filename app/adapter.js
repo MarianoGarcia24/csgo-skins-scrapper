@@ -19,7 +19,7 @@ const skinToObject = (skin,stickers,id_skin,link)=>{
         STICKER_2: stickers[2] || "",
         STICKER_3: stickers[3] || "",
         ID: id_skin,
-        LINK: link + "#" + id
+        LINK: link + "#" + id_skin
     }
     return obj
 }
@@ -32,6 +32,11 @@ const getId = (skin,ids_arr,skins_ID) => {
     return id;
 }
 
+const getId_V2 = (id) => {
+    return "730_2_" + id
+}
+
 exports.getId = getId;
 exports.skinToObject = skinToObject;
 exports.objectToCsv = objectToCsv;
+exports.getId_V2 = getId_V2;

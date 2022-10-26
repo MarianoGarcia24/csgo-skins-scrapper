@@ -22,8 +22,10 @@ const getProfilesWithCSGO = async (data) => {
             }
             if (i%29!=0)
                 await new Promise(r => setTimeout(r,500))
-            else
+            else{
+                console.log("Maximum rate reached. Waiting 90 seconds after continuing scrapping.");
                 await new Promise(r => setTimeout(r,90000))
+            }
             i++
         }
         else{
@@ -44,7 +46,6 @@ const scrapBots = async (page) => {
     }
     i = 0
     let dataposta = await getProfilesWithCSGO(data)
-    console.log(JSON.stringify(dataposta))
     fs.writeFile(`./inputs/${page}.json`,JSON.stringify(dataposta,null, "\t"),
         (err) => {
             if (err){
@@ -78,21 +79,26 @@ const getBotsFromURL = async (url,method) => {
                         //array to save bot's links
                         const bots = [];
                         if (method=="group"){
-                        let arr = $('.linkFriend')
-                        for (el of arr){
+                            let arr = $('.linkFriend')
+                            for (el of arr){
                                 const link = $(el).attr("href");
-                            const name = $(el).text();
-                            const bot = {};
-                            bot.name = name;
+                                const name = $(el).text();
+                                const bot = {};
+                                bot.name = name;
                                 bot.JSONlink = link + "/inventory/json/730/2";
-                            let id = link.slice(link.lastIndexOf("/")+1,link.length)
-                            let ID64 = await getSteamID_64(id)
-                            bot.JSONlink_V2 = "https://steamcommunity.com/inventory/" + ID64 + "/730/2"
+                                let id = link.slice(link.lastIndexOf("/")+1,link.length)
+                                let ID64
+                                if (!id.includes("76")){
+                                    ID64 = await getSteamID_64(id)
+                                }
+                                else{
+                                    ID64 = id
+                                }
+                                bot.JSONlink_V2 = "https://steamcommunity.com/inventory/" + ID64 + "/730/2"
                                 bot.link = link + "/inventory/"
                                 bots.push(bot)
+                            }
                         }
-                        console.log(bots)
-                    }
                         // $('.linkFriend').each((i,el)=>{
                         //     const link = $(el).attr("href");
                             // const bot = {};
@@ -107,22 +113,32 @@ const getBotsFromURL = async (url,method) => {
                         // })
                          
                         else{
-                            $('.selectable').each((i,el)=>
-                            {
+                            let arr = $('.selectable')
+                            
+                            for (el of arr){
                                 if ($(el).attr("data-search").indexOf("[trade]")!=-1){
-                                    const bot = {name:"",link:""};
+                                    let generic = "http://steamcommunity.com/"
+                                    const bot = {};
                                     bot.name = $(el).attr("data-search");
-                                    bot.link = $(el).find('.selectable_overlay').attr("href")
-                                    bot.JSONlink = bot.link + "/inventory/json/730/2";
-                                    bot.link = bot.link + "/inventory/"
+                                    let id = $(el).attr("data-steamid")
+                                    bot.JSONlink = generic + "id/" + id + "/inventory/json/730/2";
+                                    let ID64
+                                    console.log(id)
+                                    if (!id.includes("76")){
+                                        ID64 = await getSteamID_64(id)
+                                    }
+                                    else{
+                                        ID64 = id
+                                    }
+                                    bot.JSONlink_V2 = "https://steamcommunity.com/inventory/" + ID64 + "/730/2"
+                                    bot.link = generic + "profiles/" + id + "/inventory/"
+                                    console.log(bot)
                                     bots.push(bot)
                                 }
-                            })                
+                            }               
                         }
-                    console.log("here2")
                         return bots
                     })
-    console.log("here")
     return bots
 }
 
@@ -161,5 +177,5 @@ const getBots = (page) => {
     return pages
 }
 
-scrapBots("csgoexo")
+scrapBots("swapgg")
 exports.getBots = getBots
