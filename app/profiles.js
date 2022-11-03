@@ -98,25 +98,12 @@ const getBotsFromURL = async (url,method) => {
                                 bot.link = link + "/inventory/"
                                 bots.push(bot)
                             }
-                        }
-                        // $('.linkFriend').each((i,el)=>{
-                        //     const link = $(el).attr("href");
-                            // const bot = {};
-                            // bot.name = $(el).text();
-                            // bot.JSONlink = link + "/inventory/json/730/2";
-                            // let id = link.slice(link.lastIndexOf("/")+1,link.length)
-                            // let ID64 = getSteamID_64(id).then((data)=>{
-                            //     bot.JSONlink_V2 = "https://steamcommunity.com/inventory/" + data + "/730/2"
-                            //     bot.link = link + "/inventory/"
-                            //     bots.push(bot)
-                        //     })
-                        // })
-                         
+                        }                        
                         else{
                             let arr = $('.selectable')
                             
                             for (el of arr){
-                                if ($(el).attr("data-search").indexOf("[trade]")!=-1){
+                                if ($(el).attr("data-search").indexOf("bot#")!=-1){
                                     let generic = "http://steamcommunity.com/"
                                     const bot = {};
                                     bot.name = $(el).attr("data-search");
@@ -177,5 +164,5 @@ const getBots = (page) => {
     return pages
 }
 
-scrapBots("swapgg")
+// scrapBots("tradeit")
 exports.getBots = getBots

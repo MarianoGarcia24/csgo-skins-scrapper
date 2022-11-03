@@ -22,7 +22,10 @@
     },
     {
         "page": "tradeit",
-        "url": ["https://steamcommunity.com/groups/tradeitggbots/members/?searchKey=bot"],
+        "url": ["https://steamcommunity.com/groups/tradeitggbots/members/?searchKey=bot",
+                "https://steamcommunity.com/groups/tradeitggbots/members/?searchKey=bot&p=2",
+                "https://steamcommunity.com/groups/tradeitggbots/members/?searchKey=bot&p=3",
+                "https://steamcommunity.com/groups/tradeitggbots/members/?searchKey=bot&p=4"],
         "method": "group"
     }
     

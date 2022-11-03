@@ -1,7 +1,6 @@
-const axios = require('axios');
+const axios = require('axios')
 const fs = require('fs')
 const adapter = require('./adapter')
-const cheerio = require('cheerio')
 const checker = require('./checker')
 const csvParser = require('csv-parser')
 const utils = require('./utils')
@@ -33,6 +32,7 @@ const readCsvFile = (skinpage) => {
     }
     )
 }
+
 
 const writeCsvFile = (skinsToPush,pagename) => {
     let skins;
@@ -75,15 +75,15 @@ const bots = async ({page,url,method}) => {
             j++;
             if (skins!=[])
                 skinsToCsv.push(skins)
-            if (i%20==0){
-                console.log("Waiting 100 seconds")
-                await new Promise(r => setTimeout(r, 110000));    
+            if (i%75==0){
+                console.log("Waiting 60 seconds")
+                await new Promise(r => setTimeout(r, 60));    
 
                 // await new Promise(r => setTimeout(r, 110000));    
             }
             else{
-                console.log("Waiting 3 seconds")
-                await new Promise(r => setTimeout(r, 3000));    
+                console.log("Waiting 1 seconds")
+                await new Promise(r => setTimeout(r, 1000));    
             }
             i++;
         }
@@ -247,7 +247,7 @@ const scrap = (groupname) => {
     bots(page[0])
 }
 
-scrap("swapgg")
+scrap("tradeit")
 
 
 // getUserInv_V2(
