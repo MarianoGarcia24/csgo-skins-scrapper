@@ -1,6 +1,6 @@
 //ADAPTER
-//COMPONENTE THAT TRANSFORMS PARAMETERS INTO OBJECTS, OR 
-//OBJECTS INTO CSV ALIKE STRINGS
+//COMPONENT THAT TRANSFORMS PARAMETERS INTO OBJECTS, OR 
+//OBJECTS INTO CSV STRINGS
 
 const objectToCsv = (skin) =>{
     const skinToPush = skin.NAME + ',' + skin.WEAR + ',' 
@@ -10,19 +10,41 @@ const objectToCsv = (skin) =>{
     return skinToPush
 }
 
-const skinToObject = (skin,stickers,id_skin,link)=>{
+const skinToObject = (skin,stickers,id_skin,link,stickers_img)=>{
     obj = {
         NAME: skin.name,
         WEAR: skin.descriptions[0].value.slice(10),
-        STICKER_0: stickers[0] || "",
-        STICKER_1: stickers[1] || "",
-        STICKER_2: stickers[2] || "",
-        STICKER_3: stickers[3] || "",
+        Stickers: [{
+                sticker: stickers[0] || "",
+                icon_url: stickers_img[0] || ""
+            },       
+            {
+                sticker: stickers[1] || "",
+                icon_url: stickers_img[1] || ""
+            },
+            {
+                sticker: stickers[2] || "",
+                icon_url: stickers_img[2] || ""
+            },
+            {
+                sticker: stickers[3] || "",
+                icon_url: stickers_img[3] || ""
+            }
+        
+        ],
         ID: id_skin,
         LINK: link + "#" + id_skin
     }
     return obj
 }
+
+/**
+ * Get the skin ID by it's class and instance id.
+ * @param  skin skin object
+ * @param  ids_arr 
+ * @param  skins_ID 
+ * @returns 
+ */
 
 const getId = (skin,ids_arr,skins_ID) => {
     let str = skin.classid + "_" + skin.instanceid
