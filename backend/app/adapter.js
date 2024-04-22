@@ -29,6 +29,10 @@ const skinToObject = (skin,stickers,id_skin,link,stickers_img)=>{
             {
                 sticker: stickers[3] || "",
                 icon_url: stickers_img[3] || ""
+            },
+            {
+                sticker: stickers[4] || "",
+                icon_url: stickers_img[4] || ""
             }
         
         ],
