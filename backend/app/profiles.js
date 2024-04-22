@@ -164,5 +164,5 @@ const getBots = (page) => {
     return pages
 }
 
-// scrapBots("tradeit")
+//scrapBots("skinsmonkey")
 exports.getBots = getBots

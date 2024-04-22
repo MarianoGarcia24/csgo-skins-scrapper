@@ -64,9 +64,28 @@ const readJSONFile = (pagename) => {
     }
     catch{
         console.log("JSON File not found. We'll create one.")
-        return []
+        skins = []
+        let skinsById = []
+        return ({skins,skinsById})
     }
 }
+
+const modifyJSONFile = (pagename) => {
+    let profiles
+    let arr = []
+    try{
+        profiles = fs.readFileSync(`./inputs/${pagename}.json`)
+        profiles = JSON.parse(profiles)
+        profiles.forEach(profile => profile.JSONlink_V2 = profile.JSONlink_V2.concat('?count=1000'))
+        fs.writeFileSync(`./inputs/${pagename}.json`,JSON.stringify(profiles,null, "\t"))
+    }
+    catch{
+    }
+}
+
+// modifyJSONFile('skinsmonkey')
+
+
 
 module.exports = {readCsvFile, writeCsvFile, writeJSONFile, readJSONFile}
 

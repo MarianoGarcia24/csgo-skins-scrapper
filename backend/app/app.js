@@ -147,4 +147,4 @@ const scrap = (groupname) => {
     bots(page[0],file)
 }
 
-scrap("tradeit")
+scrap("skinsmonkey")
