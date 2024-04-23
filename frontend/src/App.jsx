@@ -30,7 +30,7 @@ const Weapon = ({object}) => {
         <a href={object.LINK} target='_blank'>
         <button className='button_external_site'>View on steam</button>
         </a>
-        <a href={object.link[0].link} target='_blank'>
+        <a href={object.link} target='_blank'>
         <button className='button_external_site'> Inspect in game</button>
         </a>
       </div>
