@@ -84,6 +84,7 @@ const getUserInv_V2 = async (dato,skinsOnFile,skinsOnFile_ById) => {
     return skins
 }
 
+
 const group_stickers_sources = (description) => {
     let desc = description.split('<img')
     desc = desc.splice(1,desc.length)
@@ -94,6 +95,14 @@ const group_stickers_sources = (description) => {
     return desc
 }
 
+const getInspectLink = (skin,assetid,link) => {
+    let string = ''
+    let inspectLink = skin.actions[0].link
+    let id = link.substring(link.indexOf('/profiles/') + '/profiles/'.length, link.indexOf('/inventory/'))
+    inspectLink = inspectLink.replace('%owner_steamid%',id)
+    inspectLink = inspectLink.replace('%assetid%', assetid)
+    return inspectLink
+}
 
 let iterateSkins_V2 = (skins_ID,skins_DESC,link,skinsOnFile,skinsOnFile_ById) => {
     let inv_skinstopush = []
@@ -119,7 +128,7 @@ let iterateSkins_V2 = (skins_ID,skins_DESC,link,skinsOnFile,skinsOnFile_ById) =>
                         inv_skinstopush.push({
                             ...skin_obj,
                             icon_url: skin.icon_url,
-                            link: skin.actions
+                            link: getInspectLink(skin,skins_ID[id],link)
                         }
                         )
                     }
@@ -147,4 +156,5 @@ const scrap = (groupname) => {
     bots(page[0],file)
 }
 
-scrap("skinsmonkey")
+scrap("tradeit")
+
