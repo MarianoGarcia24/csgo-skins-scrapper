@@ -96,6 +96,7 @@ const getBotsFromURL = async (url,method) => {
                                 }
                                 bot.JSONlink_V2 = "https://steamcommunity.com/inventory/" + ID64 + "/730/2"
                                 bot.link = link + "/inventory/"
+                                bot.STEAM_ID = ID64
                                 bots.push(bot)
                             }
                         }                        
@@ -119,6 +120,7 @@ const getBotsFromURL = async (url,method) => {
                                     }
                                     bot.JSONlink_V2 = "https://steamcommunity.com/inventory/" + ID64 + "/730/2"
                                     bot.link = generic + "profiles/" + id + "/inventory/"
+                                    bot.STEAM_ID = ID64
                                     console.log(bot)
                                     bots.push(bot)
                                 }
@@ -164,5 +166,5 @@ const getBots = (page) => {
     return pages
 }
 
-//scrapBots("skinsmonkey")
+// scrapBots("tradeit")
 exports.getBots = getBots

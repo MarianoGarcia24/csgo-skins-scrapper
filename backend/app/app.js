@@ -5,6 +5,7 @@ const checker = require('./checker')
 const csvParser = require('csv-parser')
 const profiles = require('./profiles')
 const { readCsvFile,writeCsvFile,writeJSONFile,readJSONFile } = require('./utils')
+const { inspect } = require('util')
 
 let pages = fs.readFileSync('./inputs/pages.json')
 pages = JSON.parse(pages)
@@ -126,6 +127,9 @@ let iterateSkins_V2 = (skins_ID,skins_DESC,link,skinsOnFile,skinsOnFile_ById) =>
                         let stickers_img = group_stickers_sources(description)
                         let skin_obj = adapter.skinToObject(skin,stickers,skin_id,link,stickers_img)
                         inv_skinstopush.push({
+                            assetid: skins_ID[id],
+                            classid: skin.classid,
+                            instanceid: skin.instanceid,
                             ...skin_obj,
                             icon_url: skin.icon_url,
                             link: getInspectLink(skin,skins_ID[id],link)
@@ -156,5 +160,30 @@ const scrap = (groupname) => {
     bots(page[0],file)
 }
 
-scrap("tradeit")
+//scrap("tradeit")
 
+const fix = async (groupname) => {
+    let skins = await fs.readFileSync(`./outputs/${groupname}.json`,)
+    skins = JSON.parse(skins)
+    for (let skin of skins) {
+        let inspectLink = skin.link
+        let id = skin.LINK.substring(skin.LINK.indexOf('/id/') + '/id/'.length,skin.LINK.indexOf('/inventory/'))
+        // console.log(id)
+        const pattern = /Steamcommunity.com\/id\/([^A]+)/
+        const matches = pattern.exec(inspectLink);
+        if (matches && matches.length > 1){
+            let ID_64 = await axios.get(`http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${process.env.APIKEY}&vanityurl=${matches[1]}`)
+            ID_64 = ID_64.data.response.steamid
+            inspectLink = inspectLink.replace(`teamcommunity.com/id/${matches[1]}`,ID_64) 
+            console.log(inspectLink)
+        }
+        skin.link = inspectLink
+    }
+
+    fs.writeFile(`./outputs/${groupname}.json`,JSON.stringify(skins,null,'\t'),(err)=>{
+        if (err)
+            console.log("No se pudo escribir el archivo")
+    })
+}
+
+fix('tradeit')

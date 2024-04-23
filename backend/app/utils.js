@@ -86,7 +86,6 @@ const modifyJSONFile = (pagename) => {
 // modifyJSONFile('skinsmonkey')
 
 
-
 module.exports = {readCsvFile, writeCsvFile, writeJSONFile, readJSONFile}
 
 //DEPRECATED METHOD TO SCRAP INVENTORY
@@ -159,3 +158,4 @@ let iterateSkins = (skins_ID,skins_DESC,link) => {
         return ""
     }
 }
+
