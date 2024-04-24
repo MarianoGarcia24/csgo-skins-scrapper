@@ -14,28 +14,10 @@ const skinToObject = (skin,stickers,id_skin,link,stickers_img)=>{
     obj = {
         NAME: skin.name,
         WEAR: skin.descriptions[0].value.slice(10),
-        Stickers: [{
-                sticker: stickers[0] || "",
-                icon_url: stickers_img[0] || ""
-            },       
-            {
-                sticker: stickers[1] || "",
-                icon_url: stickers_img[1] || ""
-            },
-            {
-                sticker: stickers[2] || "",
-                icon_url: stickers_img[2] || ""
-            },
-            {
-                sticker: stickers[3] || "",
-                icon_url: stickers_img[3] || ""
-            },
-            {
-                sticker: stickers[4] || "",
-                icon_url: stickers_img[4] || ""
-            }
-        
-        ],
+        Stickers: stickers.map((sticker,index) => ({
+            sticker: sticker || "",
+            icon_url: stickers_img[index] || ""
+        })).filter(sticker => sticker.sticker !== ""),
         ID: id_skin,
         LINK: link + "#" + id_skin
     }
