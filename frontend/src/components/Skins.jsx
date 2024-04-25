@@ -4,9 +4,7 @@ import Skin from './Skin'
 const Skins = ({skins}) => {
     return (
             
-    <div>
-    <h1 className='text-6xl text-red-500 justify-content' >ANDA?</h1>
-    <div className='grid grid-cols-4 gap-x-3'>
+    <div className='grid sm:grid-cols-3 lg:grid-cols-4  gap-x-3 justify-center '>
       {
         skins.map(object => {
           return (
@@ -17,7 +15,6 @@ const Skins = ({skins}) => {
         })
       }
     </div>
-  </div>
     )
 }
 
