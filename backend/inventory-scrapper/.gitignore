@@ -1,9 +1,9 @@
 #csv files
-/app/outputs
-/app/inputs
+/outputs
+/inputs
 
 #node modules
 node_modules
 
 #
-/app/.env
+.env
