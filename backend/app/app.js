@@ -1,10 +1,10 @@
 const axios = require('axios')
 const fs = require('fs')
-const adapter = require('./adapter')
-const checker = require('./checker')
+const adapter = require('./algorithm/adapter')
+const checker = require('./algorithm/checker')
 const csvParser = require('csv-parser')
-const profiles = require('./profiles')
-const { readCsvFile,writeCsvFile,writeJSONFile,readJSONFile } = require('./utils')
+const profiles = require('./algorithm/profiles')
+const { readCsvFile,writeCsvFile,writeJSONFile,readJSONFile } = require('./algorithm/utils')
 const { inspect } = require('util')
 
 let pages = fs.readFileSync('./inputs/pages.json')
@@ -160,7 +160,7 @@ const scrap = (groupname) => {
     bots(page[0],file)
 }
 
-//scrap("tradeit")
+scrap("tradeit")
 
 const fix = async (groupname) => {
     let skins = await fs.readFileSync(`./outputs/${groupname}.json`,)
@@ -186,4 +186,4 @@ const fix = async (groupname) => {
     })
 }
 
-fix('tradeit')
+// fix('skinsmonkey')

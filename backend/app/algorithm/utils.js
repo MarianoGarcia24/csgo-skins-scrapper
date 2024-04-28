@@ -1,5 +1,11 @@
 const csvParser = require('csv-parser')
 const fs = require('fs')
+const mongoose = require('mongoose')
+
+
+const postToDatabase = () => {
+
+}
 
 const readCsvFile = (skinpage) => {
     let skinsOnFile = []
