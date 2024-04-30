@@ -1,11 +1,25 @@
 const csvParser = require('csv-parser')
 const fs = require('fs')
 const mongoose = require('mongoose')
+const axios = require('axios')
+const config = require('./config.js')
+const baseURL = `http://localhost:${config.PORT}/api/skins`
 
 
-const postToDatabase = () => {
-
+const getFromDatabase = async (page) => {
+    const skins = await axios.get(`${baseURL}/${page}`)
+    console.log(skins.data)
+    return skins.data
 }
+
+const postToDatabase_v1 =  async (skins,pagename) => {
+    const promiseArray = skins.map(skin => {
+        axios.post(`${baseURL}`,{page:pagename, ...skin})})
+    Promise.all(promiseArray)
+    console.log('ya tamos')
+}
+
+
 
 const readCsvFile = (skinpage) => {
     let skinsOnFile = []
@@ -62,7 +76,7 @@ const writeJSONFile = (skins,pagename) => {
 const readJSONFile = (pagename) => {
     let skins
     try{
-        skins = fs.readFileSync(`./outputs/${pagename}.json`)
+        skins = fs.readFileSync(`../outputs/${pagename}.json`)
         skins = JSON.parse(skins)
         let skinsbyId = []
         skins.forEach(s => skinsbyId.push(s.ID))
@@ -91,6 +105,8 @@ const modifyJSONFile = (pagename) => {
 
 // modifyJSONFile('skinsmonkey')
 
+const skins = readJSONFile('tradeit')
+postToDatabase_v1(skins.skins,'tradeit')
 
 module.exports = {readCsvFile, writeCsvFile, writeJSONFile, readJSONFile}
 
