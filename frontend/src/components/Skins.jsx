@@ -4,7 +4,7 @@ import Skin from './Skin'
 const Skins = ({skins}) => {
     return (
             
-    <div className='grid sm:grid-cols-3 lg:grid-cols-4  gap-x-3 justify-center '>
+    <div className='grid sm:grid-cols-3 lg:grid-cols-4 '>
       {
         skins.map(object => {
           return (

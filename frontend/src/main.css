@@ -62,8 +62,8 @@
   
   
   .Weapon {
-    padding: 10px;
-    padding-bottom: 100px;
+    padding: 1px;
+    padding-bottom: 25px;
     border-style:solid;
     display: flex;
     flex-direction: column;

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseURL = 'http://localhost:3001/skins'
+const baseURL = 'http://localhost:3001/api/skins'
 
 const getAll = async () => {
     const res = await axios.get(baseURL)

@@ -18,7 +18,7 @@ const Skin = ({object}) => {
             {object.Stickers.map((sticker,index) => 
              sticker.sticker != '' &&
              <div>
-                <img src={sticker.icon_url} className={`w-auto h-9` } alt='Sticker'></img>
+                <img src={sticker.icon_url} className={`w-12 h-9` } alt='Sticker'></img>
             </div>
             )
             }
