@@ -8,4 +8,9 @@ const getAll = async () => {
     return res.data
 }
 
-export default { getAll }
+const getByPage = async (pagename) => {
+    const res = await axios.get(`${baseURL}/${pagename}`)
+    return res.data
+}
+
+export default { getAll, getByPage }
