@@ -46,15 +46,27 @@ skinsRouter.post('/',async(req,res) => {
     }
 })
 
-skinsRouter.delete('/:id', async(req,res) => {
+skinsRouter.get('/:page/:id/', async(req,res) => {
+    const idToFind = req.params.id
+
+    try{
+        const skin = await Skin.find({ID: idToFind})
+        res.json(skin)
+    }
+    catch(e){
+        console.log(e)
+    }
+})
+
+skinsRouter.delete('/:page/:id', async(req,res) => {
     const idToDelete = req.params.id
 
     try {
-        await Skin.findByIdAndDelete({_id: idToDelete})
-        res.status(204).end
+        await Skin.findOneAndDelete({ID: idToDelete})
+        res.status(204).end()
     }
     catch(e){
-        
+        console.log(e)
     }
 })
 
