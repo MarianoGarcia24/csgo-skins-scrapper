@@ -2,7 +2,7 @@ const csvParser = require('csv-parser')
 const fs = require('fs')
 const mongoose = require('mongoose')
 const axios = require('axios')
-const config = require('./config.js')
+const config = require('../utils/config.js')
 const baseURL = `http://localhost:${config.PORT}/api/skins`
 
 
@@ -18,8 +18,6 @@ const postToDatabase_v1 =  async (skins,pagename) => {
     Promise.all(promiseArray)
     console.log('ya tamos')
 }
-
-
 
 const readCsvFile = (skinpage) => {
     let skinsOnFile = []
@@ -105,8 +103,8 @@ const modifyJSONFile = (pagename) => {
 
 // modifyJSONFile('skinsmonkey')
 
-const skins = readJSONFile('tradeit')
-postToDatabase_v1(skins.skins,'tradeit')
+// const skins = readJSONFile('skinsmonkey')
+// postToDatabase_v1(skins.skins,'skinsmonkey')
 
 module.exports = {readCsvFile, writeCsvFile, writeJSONFile, readJSONFile}
 

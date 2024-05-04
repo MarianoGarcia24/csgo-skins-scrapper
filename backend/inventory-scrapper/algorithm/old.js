@@ -1,45 +1,36 @@
-require('dotenv').config()
+//THIS CODE SCRAPS PROFILES FROM ,JSON FILE AND THEN
+//ITERATE OVER THE INVENTORIES, WRITING A JSONFILE.
+
 const axios = require('axios')
 const fs = require('fs')
 const adapter = require('./algorithm/adapter')
 const checker = require('./algorithm/checker')
+const csvParser = require('csv-parser')
 const profiles = require('./algorithm/profiles')
 const { readCsvFile,writeCsvFile,writeJSONFile,readJSONFile } = require('./algorithm/utils')
-const skinService = require('./utils/skinService')
-
+const { inspect } = require('util')
 
 let pages = fs.readFileSync('./inputs/pages.json')
 pages = JSON.parse(pages)
 
+
 let filters = fs.readFileSync('./inputs/filters.json')
 filters = JSON.parse(filters)
 
+var skinsById = []
+var skinsOnFile = []
 
 
-
-const createIDArray = (skins) => {
-    const idValueArray = []
-
-    skins.forEach((skin) => {
-        idValueArray[skin.ID] = 0;
-    })
-
-    return idValueArray
-}
-
-
-
-const bots = async ({page,url,method},skins) => {
+const bots = async ({page,url,method},{skinsbyId,skins}) => {
     console.log(page,url)
     let datos = profiles.getBots(page)
     let i = 1
     let j = 0
-    
-    let skinsById = createIDArray(skins)
-    console.log(skinsById)
+    // let skinsToCsv = [];
     let skinstoJSON = [];
-
-
+    let newSkins = [] 
+    
+ 
     while (j<datos.length){
         console.log("Scrapping:",datos[j].name, "bots left:",datos.length-j-1)
         newSkins = await getUserInv_V2(datos[j],skins,skinsById)
@@ -47,8 +38,7 @@ const bots = async ({page,url,method},skins) => {
             j++;
             if (newSkins!=[]){
                 // skinsToCsv.push(skins)
-                skinService.postToDatabase(newSkins,page)
-                skinstoJSON.concat(newSkins)
+                skinstoJSON = skinstoJSON.concat(newSkins)
             }
             if (i%3==0){
                 await new Promise(r => setTimeout(r, 6000));    
@@ -66,11 +56,10 @@ const bots = async ({page,url,method},skins) => {
             await new Promise(r => setTimeout(r, 80000));  
         }
     }
+    console.log("New skins added:", skinstoJSON)
     // writeCsvFile(skinsToCsv.join("\n"),page)
     skins = skins.concat(skinstoJSON)
     writeJSONFile(skins,page)
-    console.log(skinsById)
-    skinService.deleteFromDatabase(skinsById,page)
     console.timeEnd('begin')
 }
 
@@ -127,7 +116,7 @@ let iterateSkins_V2 = (skins_ID,skins_DESC,link,skinsOnFile,skinsOnFile_ById) =>
         if (name.indexOf("Souvenir")==-1){
             let id = skin.classid + skin.instanceid
             let skin_id = adapter.getId_V2(skins_ID[id])
-            if (!skinsOnFile_ById.hasOwnProperty(skin_id)){
+            if (skinsOnFile_ById.includes(skin_id)!=true){
                 let description = skin.descriptions
                 description = description[description.length-1].value
                 // here i evaluate whether the skin has stickers or not
@@ -153,7 +142,8 @@ let iterateSkins_V2 = (skins_ID,skins_DESC,link,skinsOnFile,skinsOnFile_ById) =>
                 } 
             }
             else{
-                skinsOnFile_ById[skin_id] = 1
+                let skin_index = skinsOnFile.findIndex(X => X.ID == skin_id)
+                inv_skinstopush.push(skinsOnFile[skin_index])
             }
         }
     }
@@ -166,15 +156,14 @@ let iterateSkins_V2 = (skins_ID,skins_DESC,link,skinsOnFile,skinsOnFile_ById) =>
     }
 }
 
-const scrap = async (groupname) => {
+const scrap = (groupname) => {
     console.time("begin")
-    console.log('scrapping:',groupname)
-    const skins = await skinService.getByPage(groupname)
+    let file = readJSONFile(groupname)
     let page = pages.filter(p => p.page == groupname)
-    bots(page[0],skins)
+    bots(page[0],file)
 }
 
-scrap("skinsmonkey")
+// scrap("skinsmonkey")
 
 const fix = async (groupname) => {
     let skins = await fs.readFileSync(`./outputs/${groupname}.json`,)
