@@ -28,7 +28,7 @@ skinsRouter.post('/:page',async(req,res) => {
     console.log(page)
     try {
         Skin.insertMany(skins)
-        .then(data => res.status(201).send(data))
+        .then(data => res.send(data))
     }
     catch(error){
         console.log(error)
@@ -63,7 +63,7 @@ skinsRouter.delete('/:page/:id', async(req,res) => {
 
     try {
         const response = await Skin.findOneAndDelete({ID: idToDelete})
-        res.status(204).send(response)
+        res.send(response)
     }
     catch(e){
         console.log(e)
