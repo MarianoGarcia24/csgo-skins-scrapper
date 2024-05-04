@@ -62,8 +62,8 @@ skinsRouter.delete('/:page/:id', async(req,res) => {
     const idToDelete = req.params.id
 
     try {
-        await Skin.findOneAndDelete({ID: idToDelete})
-        res.status(204).end()
+        const response = await Skin.findOneAndDelete({ID: idToDelete})
+        res.status(204).send(response)
     }
     catch(e){
         console.log(e)
