@@ -3,12 +3,11 @@ const fs = require('fs')
 const mongoose = require('mongoose')
 const axios = require('axios')
 const config = require('../utils/config.js')
-const baseURL = `http://localhost:${config.PORT}/api/skins`
+const baseURL = `http://localhost:3001/api/skins`
 
 
 const getFromDatabase = async (page) => {
     const skins = await axios.get(`${baseURL}/${page}`)
-    console.log(skins.data)
     return skins.data
 }
 
@@ -101,10 +100,29 @@ const modifyJSONFile = (pagename) => {
     }
 }
 
-// modifyJSONFile('skinsmonkey')
-
-// const skins = readJSONFile('skinsmonkey')
-// postToDatabase_v1(skins.skins,'skinsmonkey')
+const remove_Duplicates = (page) => {
+    getFromDatabase(page)
+    .then(skins => 
+        skins.map(skin => skin.ID)
+    ).then
+    (skins_ID => {
+        let sorted = skins_ID.sort()
+        console.log(sorted)
+        let i=0 
+        while (i<sorted.length){
+            let duplicated_times = 0;
+            let j = i;
+            while (sorted[i]==sorted[j]){
+                duplicated_times++
+                // axios.delete(`${baseURL}/${page}/${sorted[i]}`)
+                i++
+            }
+            console.log(sorted[i],':',duplicated_times)
+        }
+        console.log(skins_ID)
+    }
+)
+}
 
 module.exports = {readCsvFile, writeCsvFile, writeJSONFile, readJSONFile}
 

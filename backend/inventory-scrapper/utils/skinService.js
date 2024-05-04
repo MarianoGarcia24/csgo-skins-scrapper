@@ -34,12 +34,10 @@ const deleteFromDatabase = async (skins, page) => {
             return axios.delete(`${baseURL}/${page}/${index}`)
         }
     })
-    console.log(promiseArray)
     try{
         const response = await Promise.all(promiseArray)
         const responseData = response.map(res => res.data)
         console.log("Skins deleted because they weren't on inventory:", responseData)
-        return responseData
     }
     catch(e){
         console.log('Error deleting skins:', e)

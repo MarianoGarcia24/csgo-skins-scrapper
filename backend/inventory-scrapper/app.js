@@ -176,28 +176,4 @@ const scrap = async (groupname) => {
 
 scrap("skinsmonkey")
 
-const fix = async (groupname) => {
-    let skins = await fs.readFileSync(`./outputs/${groupname}.json`,)
-    skins = JSON.parse(skins)
-    for (let skin of skins) {
-        let inspectLink = skin.link
-        let id = skin.LINK.substring(skin.LINK.indexOf('/id/') + '/id/'.length,skin.LINK.indexOf('/inventory/'))
-        // console.log(id)
-        const pattern = /Steamcommunity.com\/id\/([^A]+)/
-        const matches = pattern.exec(inspectLink);
-        if (matches && matches.length > 1){
-            let ID_64 = await axios.get(`http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${process.env.APIKEY}&vanityurl=${matches[1]}`)
-            ID_64 = ID_64.data.response.steamid
-            inspectLink = inspectLink.replace(`teamcommunity.com/id/${matches[1]}`,ID_64) 
-            console.log(inspectLink)
-        }
-        skin.link = inspectLink
-    }
-
-    fs.writeFile(`./outputs/${groupname}.json`,JSON.stringify(skins,null,'\t'),(err)=>{
-        if (err)
-            console.log("No se pudo escribir el archivo")
-    })
-}
-
 // fix('skinsmonkey')
