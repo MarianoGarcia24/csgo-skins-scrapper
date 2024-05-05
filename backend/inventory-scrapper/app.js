@@ -16,7 +16,6 @@ filters = JSON.parse(filters)
 
 
 
-
 const createIDArray = (skins) => {
     const idValueArray = []
 

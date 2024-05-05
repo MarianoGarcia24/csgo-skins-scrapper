@@ -19,8 +19,8 @@ const postToDatabase =  async (skins,pagename) => {
         axios.post(`${baseURL}`,{page:pagename, ...skin})})
     try{
         const response = await Promise.all(promiseArray)
-        console.log(response)
         const responseData = response.map(response => response.data)
+        console.log(responseData)
         return responseData
     }
     catch(e){
@@ -34,9 +34,10 @@ const deleteFromDatabase = async (skins, page) => {
             return axios.delete(`${baseURL}/${page}/${index}`)
         }
     })
+    const filteredPromises = promiseArray.filter(promise => promise !== undefined)
     try{
-        const response = await Promise.all(promiseArray)
-        const responseData = response.map(res => res.data)
+        const response = await Promise.all(filteredPromises)
+        const responseData = response.map(r =>  r ? r.data : '' )
         console.log("Skins deleted because they weren't on inventory:", responseData)
     }
     catch(e){
