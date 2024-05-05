@@ -19,7 +19,7 @@ const Skins = ({page}) => {
         items.map(object => {
           return (
             <div>
-            <Skin object={object}/>
+            <Skin key={object.ID} object={object}/>
           </div>
           )
         })

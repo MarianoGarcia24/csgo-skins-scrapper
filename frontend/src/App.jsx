@@ -26,6 +26,7 @@ const Menu = () => {
     <div>
       <Link style={padding} to='/tradeit'>tradeit</Link>
       <Link style={padding} to='/skinsmonkey'>skinsmonkey</Link>
+      <Link style={padding} to='/swapgg'> swap.gg </Link>
       <Link style={padding} to='/about'>about</Link>
     </div>
   )
@@ -44,6 +45,7 @@ function App() {
       <Routes>
         <Route path='/tradeit' element={<Skins page='tradeit'/>}/>
         <Route path='/skinsmonkey' element={<Skins page='skinsmonkey'/>} />
+        <Route path='/swapgg' element={<Skins page='swapgg'/>} />
         <Route path='/about' element={<h6>ABOUT ME</h6>} />
       </Routes>
     </div>
