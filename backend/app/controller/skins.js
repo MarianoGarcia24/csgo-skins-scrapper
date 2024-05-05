@@ -12,7 +12,7 @@ skinsRouter.get('/:page', async(req,res) => {
 
     try {
         const skins = await Skin.find({page: page})
-        res.json(skins)
+        res.status(200).json(skins)
     }
     catch (error){
         console.log(error)
@@ -20,7 +20,7 @@ skinsRouter.get('/:page', async(req,res) => {
     }
 })
 
-skinsRouter.post('/:page',async(req,res) => {
+skinsRouter.post('/:page',(req,res) => {
     let skins = req.body
     const page = req.params.page
 
@@ -28,7 +28,7 @@ skinsRouter.post('/:page',async(req,res) => {
     console.log(page)
     try {
         Skin.insertMany(skins)
-        .then(data => res.send(data))
+        .then(data => res.status(201).json(data))
     }
     catch(error){
         console.log(error)
@@ -51,7 +51,7 @@ skinsRouter.get('/:page/:id/', async(req,res) => {
 
     try{
         const skin = await Skin.find({ID: idToFind})
-        res.json(skin)
+        res.status(200).json(skin)
     }
     catch(e){
         console.log(e)
@@ -63,7 +63,7 @@ skinsRouter.delete('/:page/:id', async(req,res) => {
 
     try {
         const response = await Skin.findOneAndDelete({ID: idToDelete})
-        res.send(response)
+        res.status(204).send(response)
     }
     catch(e){
         console.log(e)
