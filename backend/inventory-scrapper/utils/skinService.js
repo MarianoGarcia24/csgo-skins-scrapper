@@ -15,12 +15,14 @@ const getByPage = async (pagename) => {
 }
 
 const postToDatabase =  async (skins,pagename) => {
+    console.time("API_CALL_POST")
+    console.log(skins)
     const promiseArray = skins.map(skin => {
         axios.post(`${baseURL}`,{page:pagename, ...skin})})
     try{
         const response = await Promise.all(promiseArray)
-        const responseData = response.map(response => response.data)
-        console.log(responseData)
+        const responseData = response.map(response => response.data || '')
+        console.timeEnd("API_CALL_POST")
         return responseData
     }
     catch(e){
@@ -29,6 +31,7 @@ const postToDatabase =  async (skins,pagename) => {
 }
 
 const deleteFromDatabase = async (skins, page) => {
+    console.time("API_CALL_DELETE")
     const promiseArray = Object.entries(skins).map(([index,value]) => {
         if (value == 0){
             return axios.delete(`${baseURL}/${page}/${index}`)
@@ -39,6 +42,8 @@ const deleteFromDatabase = async (skins, page) => {
         const response = await Promise.all(filteredPromises)
         const responseData = response.map(r =>  r ? r.data : '' )
         console.log("Skins deleted because they weren't on inventory:", responseData)
+        console.timeEnd("API_CALL_DELETE")
+        return (responseData)
     }
     catch(e){
         console.log('Error deleting skins:', e)

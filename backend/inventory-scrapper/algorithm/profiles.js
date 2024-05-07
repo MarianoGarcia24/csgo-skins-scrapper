@@ -160,7 +160,7 @@ const hasCSGO_inventory = async (link) => {
 }
 
 const getBots = (page) => {
-    path = './inputs/' + page + '.json'
+    const path = './inputs/' + page + '.json'
     let pages = fs.readFileSync(path)
     pages = JSON.parse(pages)
     return pages

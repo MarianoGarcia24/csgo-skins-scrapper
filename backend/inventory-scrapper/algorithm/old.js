@@ -10,15 +10,15 @@ const profiles = require('./algorithm/profiles')
 const { readCsvFile,writeCsvFile,writeJSONFile,readJSONFile } = require('./algorithm/utils')
 const { inspect } = require('util')
 
-let pages = fs.readFileSync('./inputs/pages.json')
-pages = JSON.parse(pages)
+// let pages = fs.readFileSync('./inputs/pages.json')
+// pages = JSON.parse(pages)
 
 
-let filters = fs.readFileSync('./inputs/filters.json')
-filters = JSON.parse(filters)
+// let filters = fs.readFileSync('./inputs/filters.json')
+// filters = JSON.parse(filters)
 
-var skinsById = []
-var skinsOnFile = []
+// var skinsById = []
+// var skinsOnFile = []
 
 
 const bots = async ({page,url,method},{skinsbyId,skins}) => {

@@ -11,13 +11,6 @@ const getFromDatabase = async (page) => {
     return skins.data
 }
 
-const postToDatabase_v1 =  async (skins,pagename) => {
-    const promiseArray = skins.map(skin => {
-        axios.post(`${baseURL}`,{page:pagename, ...skin})})
-    Promise.all(promiseArray)
-    console.log('ya tamos')
-}
-
 const readCsvFile = (skinpage) => {
     let skinsOnFile = []
     let text = []
