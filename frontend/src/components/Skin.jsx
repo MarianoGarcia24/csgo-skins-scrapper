@@ -17,8 +17,14 @@ const Skin = ({object}) => {
         <div className={stickers_class}>
             {object.Stickers.map((sticker,index) => 
              sticker.sticker != '' &&
-             <div>
+             <div className='relative hover-trigger'>
                 <img src={sticker.icon_url} className={`w-12 h-9` } alt='Sticker'></img>
+                <div >
+                  <div class="absolute  bg-black bg-opacity-80 w-10rem min-h-5 left-0.5 -translate-x-1/2 hover-target overflow-x-auto flex justify-center items-center" style={{width:'10rem'}}>
+                    <p className='text-white text-center text-xs whitespace-normal'>{sticker.sticker}</p>
+                      
+                  </div>
+                  </div>
             </div>
             )
             }
