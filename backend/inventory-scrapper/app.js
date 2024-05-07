@@ -67,7 +67,6 @@ const bots = async ({page,url,method},skins) => {
     }
     // writeCsvFile(skinsToCsv.join("\n"),page)
     skins = skins.concat(skinstoJSON)
-    writeJSONFile(skins,page)
     console.log(skinsById)
     skinService.deleteFromDatabase(skinsById,page)
     console.timeEnd('begin')
@@ -92,7 +91,10 @@ const getUserInv_V2 = async (dato,skinsOnFile,skinsOnFile_ById) => {
         }
     })
     .catch(err =>{
-        console.log(err)
+        if (err.response.status != 429){
+            console.log("Null inventory, it may be private")
+            return []
+        }
         return  429
     })
     return skins
