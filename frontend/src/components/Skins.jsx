@@ -1,22 +1,20 @@
 import { useEffect, useState } from "react"
 import Skin from './Skin'
 import skinService from "../services/skinService"
-
-const getItems = async (page) => {
-  const items = await skinService.getByPage(page)
-  return items
-}
+import { useSelector } from "react-redux"
 
 
 const Skins = ({page}) => {
-    const [items,setItems] = useState([])
 
-    getItems(page).then(skins => setItems(skins))
+
+    const notes = useSelector(state => {
+      return state.skins.filter(skin => skin.page==page)
+    })
 
     return (
     <div className='grid sm:grid-cols-3 lg:grid-cols-4 '>
       {
-        items.map(object => {
+        notes.map(object => {
           return (
             <div>
             <Skin key={object.ID} object={object}/>
